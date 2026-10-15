@@ -9,6 +9,7 @@ metrics on ``ctx.info[node_id]`` so the UI can show R2 / RMSE / accuracy.
 from __future__ import annotations
 import numpy as np
 import pandas as pd
+from ._util import num_float, num_int
 
 
 def _xy(df, cfg):
@@ -21,8 +22,8 @@ def _xy(df, cfg):
 
 def train_test_split(df, cfg, ctx):
     out = df.copy()
-    rng = np.random.default_rng(int(cfg.get("seed", 42)))
-    mask = rng.random(len(out)) < float(cfg.get("train_fraction", 0.8))
+    rng = np.random.default_rng(num_int(cfg, "seed", 42))
+    mask = rng.random(len(out)) < num_float(cfg, "train_fraction", 0.8)
     out[cfg.get("new_column", "dataset")] = np.where(mask, "train", "test")
     return out
 
@@ -48,8 +49,8 @@ def logistic_regression(df, cfg, ctx):
     feats, X = _xy(df, cfg)
     y = df[cfg["target"]].astype(float).to_numpy()
     Xs = (X - X.mean(0)) / (X.std(0) + 1e-9)
-    w, b, lr = np.zeros(X.shape[1]), 0.0, float(cfg.get("learning_rate", 0.1))
-    for _ in range(int(cfg.get("iterations", 500))):
+    w, b, lr = np.zeros(X.shape[1]), 0.0, num_float(cfg, "learning_rate", 0.1)
+    for _ in range(num_int(cfg, "iterations", 500)):
         p = 1 / (1 + np.exp(-(Xs @ w + b)))
         w -= lr * (Xs.T @ (p - y)) / len(y)
         b -= lr * float(np.mean(p - y))
@@ -67,8 +68,8 @@ def logistic_regression(df, cfg, ctx):
 
 def kmeans(df, cfg, ctx):
     feats, X = _xy(df, cfg)
-    k = int(cfg.get("k", 3))
-    rng = np.random.default_rng(int(cfg.get("seed", 42)))
+    k = num_int(cfg, "k", 3)
+    rng = np.random.default_rng(num_int(cfg, "seed", 42))
     Xs = (X - X.mean(0)) / (X.std(0) + 1e-9)
     cent = Xs[rng.choice(len(Xs), size=min(k, len(Xs)), replace=False)]
     for _ in range(100):
@@ -92,7 +93,7 @@ def random_forest(df, cfg, ctx):
     y = df[cfg["target"]]
     is_class = y.dtype == object or y.nunique() <= 20 and cfg.get("task", "auto") != "regression"
     model = (RandomForestClassifier if is_class else RandomForestRegressor)(
-        n_estimators=int(cfg.get("n_estimators", 200)), random_state=int(cfg.get("seed", 42)))
+        n_estimators=num_int(cfg, "n_estimators", 200), random_state=num_int(cfg, "seed", 42))
     model.fit(X, y)
     out = df.copy()
     out[cfg.get("prediction_column", "prediction")] = model.predict(X)

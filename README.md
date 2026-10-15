@@ -9,10 +9,11 @@ analytics tools - built in the open, with workflows stored as plain JSON.
 - **Transformation & prep** - filter, formula, join, union, summarize, cross tab, and more
 - **Spatial included, free** - distance, buffer, point-in-polygon, spatial join, nearest neighbour
 - **Predictive included, free** - linear/logistic regression, k-means, random forest, evaluation
+- **Quality & privacy built in** - one-click data profiling, PII anonymize (hash / mask / redact / shuffle), a data-diff tool for regression-testing workflows, and an auditable fuzzy join with a match score on every row - the things other tools leave to paid add-ons and macros
 - **Light core** - the engine runs on just pandas + numpy. Heavier libraries are optional extras
 - **Yours** - MIT licensed, no account, no telemetry, no cloud lock-in, no per-tool upsells
 
-![Status](https://img.shields.io/badge/status-v0.2.0--alpha-orange) ![License](https://img.shields.io/badge/license-MIT-green) ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![Status](https://img.shields.io/badge/status-v0.3.0--alpha-orange) ![License](https://img.shields.io/badge/license-MIT-green) ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 
 ## Quick start
 
@@ -29,7 +30,7 @@ Run a workflow from the command line (great for scheduling / CI):
 
 ```bash
 flowprep run examples/spatial_predictive_workflow.json --output result.csv
-flowprep tools        # list all 29 tools
+flowprep tools        # list all 34 tools
 ```
 
 Use it as a Python library:
@@ -44,13 +45,14 @@ result = run_workflow(workflow, base_dir="examples", return_frames=True)
 print(result["_frames"]["sum"])
 ```
 
-## Tools (29)
+## Tools (34)
 
 | Palette | Tools |
 |---|---|
 | Input / Output | Input CSV, Input Data (inline), Output / Browse |
 | Preparation | Select, Rename, Filter, Formula, Sort, Unique, Sample, Cast Types |
-| Transform / Join | Summarize (Group By), Cross Tab, Join, Union |
+| Transform / Join | Summarize (Group By), Cross Tab, Join, Fuzzy Join, Union, Window (Rank / Lag / Rolling) |
+| Quality | Data Profile, Anonymize (PII), Data Diff (Compare) |
 | Spatial | Create Points, Distance, Buffer, Point in Polygon, Centroid, Spatial Join, Find Nearest |
 | Predictive | Train/Test Split, Linear Regression, Logistic Regression, K-Means, Random Forest*, Correlation, Evaluate |
 
@@ -72,6 +74,7 @@ analysts actually need. FlowPrep bets on a different stack:
 
 - [`examples/spatial_predictive_workflow.json`](examples/spatial_predictive_workflow.json) - distance from Toronto, revenue regression, customer segmentation
 - [`examples/spatial_join_workflow.json`](examples/spatial_join_workflow.json) - assign customers to East/West region polygons, then total revenue by region
+- [`examples/quality_fuzzy_workflow.json`](examples/quality_fuzzy_workflow.json) - profile the orders, fuzzy-join typo'd customer names to the CRM list (with match scores), then mask emails before sharing
 - Sample data lives in [`examples/data/`](examples/data/)
 
 ## Documentation

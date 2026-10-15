@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flowprep"
-version = "0.2.0"
+version = "0.3.0"
 description = "Open-source visual data preparation, spatial and predictive analytics - an Alteryx-style canvas built on pandas, numpy and DuckDB-friendly JSON workflows"
 readme = "README.md"
 license = { text = "MIT" }

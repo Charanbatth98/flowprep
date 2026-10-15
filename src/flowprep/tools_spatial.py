@@ -9,6 +9,7 @@ from __future__ import annotations
 import math
 import numpy as np
 import pandas as pd
+from ._util import num_float
 
 EARTH_R_KM = 6371.0088
 
@@ -45,7 +46,7 @@ def distance(df, cfg, ctx):
 def buffer_point(df, cfg, ctx):
     """Approximate a circular buffer as a 32-gon WKT polygon (good for mapping / overlap checks)."""
     out = df.copy()
-    lat, lon, r = cfg["lat_column"], cfg["lon_column"], float(cfg.get("radius_km", 5))
+    lat, lon, r = cfg["lat_column"], cfg["lon_column"], num_float(cfg, "radius_km", 5)
     geoms = []
     for la, lo in zip(out[lat], out[lon]):
         pts = []

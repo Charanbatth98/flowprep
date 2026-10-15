@@ -75,12 +75,12 @@ body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;c
  <div class="rbody" id="rLog" style="display:none"><div class="log" id="logBody"><span class="muted">No run yet.</span></div></div>
  <div class="rbody" id="rMeta" style="display:none"><span class="muted">Run the workflow, then select a tool to see its columns and data types.</span></div>
 </div>
-<div class="statusbar"><span id="stReady">Ready</span><span id="stTools">0 tools on canvas</span><span id="stRun"></span><span style="margin-left:auto">FlowPrep 0.2 - open source (MIT)</span></div>
+<div class="statusbar"><span id="stReady">Ready</span><span id="stTools">0 tools on canvas</span><span id="stRun"></span><span style="margin-left:auto">FlowPrep 0.3 - open source (MIT)</span></div>
 <script>
 let TOOLS=[],nodes=[],edges=[],selected=null,pendingPort=null,results=null,seq=1,curCat='All',curTab='data';
 const $=s=>document.querySelector(s);
-const CATCOLOR={Input:'#0e7c66',Output:'#0e7c66',Preparation:'#2471a3',Join:'#7d3c98',Transform:'#b9770e',Spatial:'#1a5276',Predictive:'#922b21'};
-const GLYPH={'input_csv':'CSV','input_data':'In','output':'Out','select':'Sel','filter':'Fil','formula':'fx','sort':'Sort','summarize':'Sum','join':'Join','union':'U','unique':'Unq','sample':'Smp','crosstab':'XTab','rename':'Ren','cast':'Type','create_points':'Pt','distance':'Dist','buffer':'Buf','point_in_polygon':'PiP','centroid':'Ctr','spatial_join':'SJoin','nearest':'Near','train_test_split':'Split','linear_regression':'LinR','logistic_regression':'LogR','kmeans':'K-M','random_forest':'RF','correlation':'Corr','evaluate':'Eval'};
+const CATCOLOR={Input:'#0e7c66',Output:'#0e7c66',Preparation:'#2471a3',Join:'#7d3c98',Transform:'#b9770e',Spatial:'#1a5276',Predictive:'#922b21',Quality:'#117a65'};
+const GLYPH={'input_csv':'CSV','input_data':'In','output':'Out','select':'Sel','filter':'Fil','formula':'fx','sort':'Sort','summarize':'Sum','join':'Join','fuzzy_join':'FzJ','window':'Win','union':'U','unique':'Unq','sample':'Smp','crosstab':'XTab','rename':'Ren','cast':'Type','create_points':'Pt','distance':'Dist','buffer':'Buf','point_in_polygon':'PiP','centroid':'Ctr','spatial_join':'SJoin','nearest':'Near','train_test_split':'Split','linear_regression':'LinR','logistic_regression':'LogR','kmeans':'K-M','random_forest':'RF','correlation':'Corr','evaluate':'Eval','profile':'Prof','anonymize':'Anon','data_diff':'Diff'};
 fetch('/api/tools').then(r=>r.json()).then(d=>{TOOLS=d.tools;renderCats();renderStrip();log('FlowPrep Designer ready. '+TOOLS.length+' tools loaded.','ok')}).catch(()=>log('Could not load /api/tools - is the FlowPrep server running?','err'));
 function tool(t){return TOOLS.find(x=>x.type===t)||{label:t,category:'',fields:{}}}
 function cats(){return ['All',...new Set(TOOLS.map(t=>t.category))]}

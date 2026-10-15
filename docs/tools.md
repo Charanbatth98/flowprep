@@ -20,9 +20,16 @@ workflow JSON node's `config`.
 
 ## Transform / Join
 - **Summarize** (`summarize`) - `group_by` list + `aggregations` JSON (`{"revenue": "sum"}`; also `mean`, `count`, `min`, `max`, ...).
-- **Cross Tab** (`crosstab`) - `row`, `column`, optional `value` + `aggfunc`.
+- **Cross Tab** (`crosstab`) - `row`, `column`, optional `value` + `aggfunc` (leave `value` blank for a plain count cross tab).
 - **Join** (`join`) - two inputs; `how` = inner/left/right/outer, key via `on` or `left_on`/`right_on`.
+- **Fuzzy Join** (`fuzzy_join`) - two inputs; left join on near-matching text: `left_on` / `right_on` columns are compared with normalized Levenshtein similarity, each left row keeps its best right match at or above `threshold` (0-1, default 0.85), and a `match_score` column makes every match auditable. Unmatched left rows get null right-hand values.
 - **Union** (`union`) - stack 2+ inputs; `distinct` to dedupe.
+- **Window** (`window`) - per-group window / multi-row calculations: `group_by` list, `order_by` column, value `column`, `operation` = `row_number`, `rank`, `dense_rank`, `lag`, `lead`, `cumsum`, `rolling_mean` or `rolling_sum` (rolling uses `window_size`, default 3), output to `new_column`. Rows are ordered within each group by `order_by` when given.
+
+## Quality & Privacy
+- **Data Profile** (`profile`) - one output row per input column: `dtype`, `rows`, `nulls`, `null_pct`, `distinct`, `min`, `max`, `mean`, `top_value`, `top_count`. Optional `columns` list (blank = all columns). The node's info also reports total duplicate rows - point it at any stream before you trust it.
+- **Anonymize (PII)** (`anonymize`) - protects the `columns` list in place. `method` = `hash` (SHA-256 hex), `mask` (emails keep first char + domain, other values keep only the last 4 characters), `redact` (`[REDACTED]`), or `shuffle` (permutes values within the column using `seed`, breaking the link to the row). Nulls stay null.
+- **Data Diff (Compare)** (`data_diff`) - two inputs: connect the OLD data first, then the NEW data. Rows are matched on the `key` list; output is one row per key with `status` = `added`, `removed`, `changed` or `unchanged`, plus `changed_columns` naming the differing fields (optional `columns` list restricts what is compared; blank = all shared non-key columns). Built for regression-testing workflows and auditing refreshed datasets.
 
 ## Spatial (WGS84 lon/lat, geometry as WKT)
 - **Create Points** (`create_points`) - builds `POINT (lon lat)` from `lat_column`/`lon_column`.

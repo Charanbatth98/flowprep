@@ -1,8 +1,13 @@
 # Roadmap
 
+## Shipped in v0.3.0
+- **Quality palette**: Data Profile (nulls, distinct, min/max/mean, top value), Anonymize / PII (hash, mask, redact, shuffle), Data Diff for regression-testing workflows
+- **Fuzzy Join** with a per-row match score, and a **Window** tool (rank, lag/lead, rolling, cumsum per group)
+- Hardening: Cross Tab count mode fixed; blank numeric fields from the canvas now fall back to tool defaults instead of crashing
+
 ## v0.2 - Inputs & outputs
 - Input Excel, JSON, GeoJSON, Parquet; Output to Excel/Parquet/database
-- Browse tool with full-grid view, column profiling (nulls, distinct, min/max)
+- Browse tool with full-grid view, column profiling (nulls, distinct, min/max) - profiling shipped early as the Data Profile tool in v0.3.0; full-grid browse view still to come
 - Map preview for geometry columns in the results panel
 
 ## v0.3 - Engine
@@ -11,7 +16,7 @@
 - Caching of unchanged upstream nodes between runs
 
 ## v0.4 - More tools
-- Prep: Multi-row formula, RegEx, Text to Columns, Fuzzy Match, Append Fields
+- Prep: RegEx, Text to Columns, Append Fields (Multi-row arrived early as the Window tool, and Fuzzy Match as Fuzzy Join, in v0.3.0)
 - Spatial: Drive-time / trade-area (OSRM), Geocode (Nominatim), Spatial Match modes, Heat map
 - Predictive: Decision Tree, GBM (LightGBM), Time-Series forecast, Model Comparison / AutoML-lite
 

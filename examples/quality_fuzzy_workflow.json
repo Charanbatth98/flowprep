@@ -1,0 +1,110 @@
+{
+  "edges": [
+    {
+      "from": "orders",
+      "to": "match"
+    },
+    {
+      "from": "crm",
+      "to": "match"
+    },
+    {
+      "from": "orders",
+      "to": "prof"
+    },
+    {
+      "from": "match",
+      "to": "anon"
+    },
+    {
+      "from": "anon",
+      "to": "out"
+    }
+  ],
+  "name": "Quality + Fuzzy Match + Anonymize",
+  "nodes": [
+    {
+      "config": {
+        "rows": [
+          {
+            "customer": "Jon Smith",
+            "email": "jon@example.com",
+            "revenue": 1200
+          },
+          {
+            "customer": "Ava Lee",
+            "email": "ava@example.com",
+            "revenue": 850
+          },
+          {
+            "customer": "Zebra Corp",
+            "email": "hi@zebra.example",
+            "revenue": 640
+          }
+        ]
+      },
+      "id": "orders",
+      "type": "input_data",
+      "x": 40,
+      "y": 60
+    },
+    {
+      "config": {
+        "rows": [
+          {
+            "name": "John Smith",
+            "tier": "gold"
+          },
+          {
+            "name": "Ava Lee",
+            "tier": "silver"
+          }
+        ]
+      },
+      "id": "crm",
+      "type": "input_data",
+      "x": 40,
+      "y": 240
+    },
+    {
+      "config": {
+        "left_on": "customer",
+        "right_on": "name",
+        "threshold": 0.8
+      },
+      "id": "match",
+      "type": "fuzzy_join",
+      "x": 300,
+      "y": 140
+    },
+    {
+      "config": {
+        "columns": []
+      },
+      "id": "prof",
+      "type": "profile",
+      "x": 300,
+      "y": 20
+    },
+    {
+      "config": {
+        "columns": [
+          "email"
+        ],
+        "method": "mask",
+        "seed": 42
+      },
+      "id": "anon",
+      "type": "anonymize",
+      "x": 560,
+      "y": 140
+    },
+    {
+      "config": {},
+      "id": "out",
+      "type": "output",
+      "x": 800,
+      "y": 140
+    }
+  ]
+}

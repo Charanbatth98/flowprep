@@ -18,10 +18,10 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 import pandas as pd
-from . import tools_prep, tools_spatial, tools_predictive
+from . import tools_prep, tools_spatial, tools_predictive, tools_quality
 
 CATALOG: dict = {}
-for _mod in (tools_prep, tools_spatial, tools_predictive):
+for _mod in (tools_prep, tools_spatial, tools_predictive, tools_quality):
     for _name, _spec in _mod.TOOLS.items():
         CATALOG[_name] = {**_spec, "type": _name}
 
