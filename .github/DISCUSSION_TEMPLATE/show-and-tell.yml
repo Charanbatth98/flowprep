@@ -1,0 +1,11 @@
+name: Show and tell
+description: Share a workflow you built with FlowPrep
+title: "[Show and tell] "
+labels: []
+body:
+  - type: textarea
+    attributes:
+      label: What did you build?
+      description: Paste or attach your workflow JSON, and tell us what it does.
+    validations:
+      required: true

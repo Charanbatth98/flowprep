@@ -88,6 +88,16 @@ Excel / JSON / GeoJSON inputs, database connectors, DuckDB execution engine,
 map preview in the canvas, workflow scheduling, Alteryx `.yxmd` importer.
 See [docs/roadmap.md](docs/roadmap.md).
 
+## Community
+
+FlowPrep is public and open to everyone:
+
+- **Star the repo** if it's useful, it genuinely helps others find it
+- **Discussions** (tab at the top of the repo) - ask questions, share workflows
+  in Show and Tell, react to posts
+- **Issues** - bug reports and tool ideas, templates included
+- **Pull requests** - adding a tool takes ~30 lines, see [CONTRIBUTING.md](CONTRIBUTING.md)
+
 ## License
 
 MIT - see [LICENSE](LICENSE).
