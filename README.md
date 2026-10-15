@@ -18,7 +18,7 @@ analytics tools - built in the open, with workflows stored as plain JSON.
 ## Quick start
 
 ```bash
-git clone https://github.com/Charanb23/flowprep.git
+git clone https://github.com/Charanbatth98/flowprep.git
 cd flowprep
 pip install -e .
 
