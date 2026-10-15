@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlowPrep Designer</title>
+<style>
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;color:#1b2733;background:#e8edf2;display:flex;flex-direction:column;font-size:13px}
+.titlebar{background:#0d2b4c;color:#fff;display:flex;align-items:center;gap:14px;padding:6px 12px}
+.titlebar .logo{font-weight:700;font-size:15px}.titlebar .logo em{font-style:normal;color:#7fd1c0}
+.titlebar .doc{opacity:.75;font-size:12px}.menu{opacity:.9;font-size:12.5px;display:flex;gap:13px;margin-left:10px}.menu span{cursor:default}
+.toolbar{background:#f7f9fb;border-bottom:1px solid #c9d4df;display:flex;align-items:center;gap:6px;padding:6px 10px;flex-wrap:wrap}
+.toolbar button,.toolbar label.btn{border:1px solid #b6c4d2;background:#fff;border-radius:5px;padding:6px 10px;cursor:pointer;font-size:12.5px}
+.toolbar button:hover{background:#eaf2fa}.toolbar .sep{width:1px;height:22px;background:#c9d4df;margin:0 4px}
+#runBtn{background:#1e8449;border-color:#1e8449;color:#fff;font-weight:700;padding:6px 16px}
+#runBtn:hover{background:#239a57}
+.toolbar input{padding:6px 9px;border:1px solid #b6c4d2;border-radius:5px;margin-left:auto;min-width:170px}
+.cats{background:#dfe8f1;border-bottom:1px solid #c9d4df;display:flex;gap:2px;padding:5px 10px 0;overflow-x:auto}
+.cats button{border:1px solid #c9d4df;border-bottom:none;background:#eef3f8;border-radius:7px 7px 0 0;padding:6px 13px;cursor:pointer;font-size:12.5px;white-space:nowrap}
+.cats button.on{background:#fff;font-weight:700;color:#0d2b4c;box-shadow:inset 0 3px 0 #f39c12}
+.strip{background:#fff;border-bottom:1px solid #c9d4df;display:flex;gap:4px;padding:8px 10px;overflow-x:auto;min-height:76px}
+.tile{flex:0 0 auto;width:78px;border:1px solid transparent;border-radius:7px;background:none;cursor:pointer;padding:5px 2px;text-align:center}
+.tile:hover{background:#eaf2fa;border-color:#bcd2e8}
+.tile .ic{width:34px;height:34px;margin:0 auto 3px;border-radius:8px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.tile .lb{font-size:10.5px;line-height:1.15;color:#33475e}
+.main{flex:1;display:flex;min-height:0}
+.config{width:288px;flex:0 0 288px;background:#fff;border-right:1px solid #c9d4df;display:flex;flex-direction:column;overflow:auto}
+.config .hd{background:#eef3f8;border-bottom:1px solid #d5dfe9;padding:8px 12px;font-weight:700;color:#0d2b4c}
+.config .bd{padding:10px 12px}
+.config label{display:block;font-size:11.5px;font-weight:600;color:#41576e;margin:9px 0 3px}
+.config input,.config textarea{width:100%;padding:6px 8px;border:1px solid #b6c4d2;border-radius:5px;font-family:inherit;font-size:12.5px}
+.config .rowbtns{display:flex;gap:6px;margin-top:14px}.config .rowbtns button{flex:1;padding:6px;border:1px solid #b6c4d2;background:#f7f9fb;border-radius:5px;cursor:pointer}
+.canvasCol{flex:1;display:flex;flex-direction:column;min-width:0}
+.ctabs{background:#dfe8f1;display:flex;padding:5px 10px 0;gap:2px}
+.ctabs .ct{background:#fff;border:1px solid #c9d4df;border-bottom:none;border-radius:7px 7px 0 0;padding:5px 14px;font-size:12.5px;font-weight:600}
+.canvasWrap{flex:1;position:relative;overflow:hidden;background:#fdfefe;background-image:radial-gradient(#c3d0dd 1px,transparent 1px);background-size:20px 20px;border-top:1px solid #c9d4df}
+#links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.node{position:absolute;width:172px;display:flex;align-items:stretch;background:#fff;border:1.5px solid #8ea6bb;border-radius:7px;box-shadow:0 2px 6px rgba(13,43,76,.18);user-select:none;cursor:grab}
+.node.sel{border-color:#2471a3;box-shadow:0 0 0 3px rgba(36,113,163,.3),0 2px 6px rgba(13,43,76,.18)}
+.node .ic{width:40px;flex:0 0 40px;border-radius:5px 0 0 5px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.node .tx{padding:6px 8px;min-width:0}.node .nm{font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.node .sb{font-size:10.5px;color:#6b8199;white-space:nowrap}
+.port{position:absolute;top:50%;transform:translateY(-50%);width:13px;height:13px;border-radius:3px;background:#e67e22;border:2px solid #fff;box-shadow:0 0 0 1px #b96a1b;cursor:pointer;z-index:3}
+.port.in{left:-8px;background:#2471a3;box-shadow:0 0 0 1px #1a5276}.port.hot{background:#f1c40f}
+.results{height:212px;background:#fff;border-top:2px solid #b6c4d2;display:flex;flex-direction:column}
+.rtabs{display:flex;gap:2px;background:#eef3f8;border-bottom:1px solid #d5dfe9;padding:5px 10px 0}
+.rtabs button{border:1px solid #d5dfe9;border-bottom:none;background:#e4ecf3;border-radius:6px 6px 0 0;padding:5px 13px;cursor:pointer;font-size:12px}
+.rtabs button.on{background:#fff;font-weight:700}
+.rbody{flex:1;overflow:auto;padding:8px 12px}
+.rbody table{border-collapse:collapse;font-size:12px}.rbody td,.rbody th{border:1px solid #d5dfe9;padding:3px 7px;white-space:nowrap}.rbody th{background:#f0f4f8;text-align:left}
+.log{font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.55;white-space:pre-wrap}
+.log .err{color:#c0392b}.log .ok{color:#1e8449}.muted{color:#6b8199}
+.statusbar{background:#0d2b4c;color:#dbe7f3;display:flex;gap:18px;padding:4px 12px;font-size:11.5px}
+@media(max-width:760px){.config{display:none}.menu{display:none}}
+</style></head><body>
+<div class="titlebar"><span class="logo">Flow<em>Prep</em> Designer</span><span class="menu"><span>File</span><span>Edit</span><span>View</span><span>Options</span><span>Run</span><span>Help</span></span><span class="doc" id="docName">Untitled Workflow</span></div>
+<div class="toolbar">
+ <button onclick="clearWf()">New</button>
+ <label class="btn">Open<input type="file" accept=".json" hidden onchange="importWf(event)"></label>
+ <button onclick="exportWf()">Save (.json)</button><span class="sep"></span>
+ <button onclick="loadSample()">Sample Workflow</button>
+ <button onclick="clearWf()">Clear Canvas</button><span class="sep"></span>
+ <button id="runBtn" onclick="runWf()">&#9654; Run</button>
+ <input id="search" placeholder="Search tools..." oninput="renderStrip()">
+</div>
+<div class="cats" id="cats"></div>
+<div class="strip" id="tools"></div>
+<div class="main">
+ <aside class="config"><div class="hd">Configuration</div><div class="bd" id="inspBody"><span class="muted">Select a tool on the canvas to configure it here, the way a designer properties panel works. After a run, click any tool to see its output in the Results window.</span></div></aside>
+ <section class="canvasCol"><div class="ctabs"><span class="ct">Canvas</span></div>
+  <div class="canvasWrap" id="canvasWrap"><svg id="links"></svg><div id="nodes"></div></div>
+ </section>
+</div>
+<div class="results">
+ <div class="rtabs"><button id="rt-data" class="on" onclick="rtab('data')">Data Preview</button><button id="rt-log" onclick="rtab('log')">Output Log</button><button id="rt-meta" onclick="rtab('meta')">Metadata</button></div>
+ <div class="rbody" id="rData"><span class="muted">Run the workflow to see data here.</span></div>
+ <div class="rbody" id="rLog" style="display:none"><div class="log" id="logBody"><span class="muted">No run yet.</span></div></div>
+ <div class="rbody" id="rMeta" style="display:none"><span class="muted">Run the workflow, then select a tool to see its columns and data types.</span></div>
+</div>
+<div class="statusbar"><span id="stReady">Ready</span><span id="stTools">0 tools on canvas</span><span id="stRun"></span><span style="margin-left:auto">FlowPrep 0.2 - open source (MIT)</span></div>
+<script>
+let TOOLS=[],nodes=[],edges=[],selected=null,pendingPort=null,results=null,seq=1,curCat='All',curTab='data';
+const $=s=>document.querySelector(s);
+const CATCOLOR={Input:'#0e7c66',Output:'#0e7c66',Preparation:'#2471a3',Join:'#7d3c98',Transform:'#b9770e',Spatial:'#1a5276',Predictive:'#922b21'};
+const GLYPH={'input_csv':'CSV','input_data':'In','output':'Out','select':'Sel','filter':'Fil','formula':'fx','sort':'Sort','summarize':'Sum','join':'Join','union':'U','unique':'Unq','sample':'Smp','crosstab':'XTab','rename':'Ren','cast':'Type','create_points':'Pt','distance':'Dist','buffer':'Buf','point_in_polygon':'PiP','centroid':'Ctr','spatial_join':'SJoin','nearest':'Near','train_test_split':'Split','linear_regression':'LinR','logistic_regression':'LogR','kmeans':'K-M','random_forest':'RF','correlation':'Corr','evaluate':'Eval'};
+fetch('/api/tools').then(r=>r.json()).then(d=>{TOOLS=d.tools;renderCats();renderStrip();log('FlowPrep Designer ready. '+TOOLS.length+' tools loaded.','ok')}).catch(()=>log('Could not load /api/tools - is the FlowPrep server running?','err'));
+function tool(t){return TOOLS.find(x=>x.type===t)||{label:t,category:'',fields:{}}}
+function cats(){return ['All',...new Set(TOOLS.map(t=>t.category))]}
+function renderCats(){$('#cats').innerHTML=cats().map(c=>`<button class="${c===curCat?'on':''}" onclick="curCat='${c}';renderCats();renderStrip()">${c}</button>`).join('')}
+function renderStrip(){
+ const q=($('#search').value||'').toLowerCase();
+ const list=TOOLS.filter(t=>(curCat==='All'||t.category===curCat)&&(!q||t.label.toLowerCase().includes(q)));
+ $('#tools').innerHTML=list.length?list.map(t=>`<button class="tile" title="${t.label} (${t.category}) - click to add" onclick="addNode('${t.type}')"><span class="ic" style="background:${CATCOLOR[t.category]||'#5d6d7e'}">${GLYPH[t.type]||'?'}</span><span class="lb">${t.label}</span></button>`).join(''):'<span class="muted" style="padding:8px">No tools match.</span>';
+}
+function defaults(type){const d={};for(const[k,v]of Object.entries(tool(type).fields)){d[k]=v==='list'?[]:v==='json'?{}:v==='bool'?false:''}return d}
+function addNode(type,x,y){const n={id:'n'+(seq++),type,config:defaults(type),x:x??70+(nodes.length*30)%440,y:y??60+(nodes.length*38)%260};nodes.push(n);selected=n.id;draw();inspect();status()}
+function clearWf(){nodes=[];edges=[];results=null;selected=null;$('#docName').textContent='Untitled Workflow';draw();inspect();$('#rData').innerHTML='<span class="muted">Run the workflow to see data here.</span>';status()}
+function status(){$('#stTools').textContent=nodes.length+' tools on canvas'}
+function draw(){
+ $('#nodes').innerHTML=nodes.map(n=>{const t=tool(n.type);const res=results&&results.nodes[n.id];
+  return `<div class="node ${n.id===selected?'sel':''}" data-id="${n.id}" style="left:${n.x}px;top:${n.y}px">
+  <div class="port in" data-port="in" data-id="${n.id}" title="Input anchor"></div><div class="port out ${pendingPort===n.id?'hot':''}" data-port="out" data-id="${n.id}" title="Output anchor"></div>
+  <div class="ic" style="background:${CATCOLOR[t.category]||'#5d6d7e'}">${GLYPH[n.type]||'?'}</div>
+  <div class="tx"><div class="nm">${t.label}</div><div class="sb">${n.id}${res?' - '+res.row_count+' records':''}</div></div></div>`}).join('');
+ document.querySelectorAll('.node').forEach(el=>{
+  el.onpointerdown=e=>{if(e.target.dataset.port)return;selected=el.dataset.id;draw();inspect();showAll();drag(el,e)};
+ });
+ document.querySelectorAll('.port').forEach(p=>p.onclick=e=>{e.stopPropagation();portClick(p.dataset.id,p.dataset.port)});
+ drawLinks();status();
+}
+function drawLinks(){
+ const pos=id=>nodes.find(x=>x.id===id);
+ $('#links').innerHTML='<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#5d7a94"/></marker></defs>'+edges.map(e=>{const a=pos(e.from),b=pos(e.to);if(!a||!b)return'';
+  const x1=a.x+172,y1=a.y+21,x2=b.x,y2=b.y+21,mx=Math.max(x1+30,(x1+x2)/2);
+  return `<path d="M${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}" stroke="#5d7a94" stroke-width="2" fill="none" marker-end="url(#arr)"/>`}).join('');
+}
+function drag(el,e){const n=nodes.find(x=>x.id===el.dataset.id);const r=$('#canvasWrap').getBoundingClientRect();const sx=e.clientX-n.x,sy=e.clientY-n.y;
+ const mv=ev=>{n.x=Math.max(0,Math.min(r.width-172,ev.clientX-sx));n.y=Math.max(0,ev.clientY-sy);el.style.left=n.x+'px';el.style.top=n.y+'px';drawLinks()};
+ const up=()=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',up)};
+ window.addEventListener('pointermove',mv);window.addEventListener('pointerup',up)}
+function portClick(id,kind){
+ if(kind==='out'){pendingPort=id;draw();return}
+ if(kind==='in'&&pendingPort&&pendingPort!==id){if(!edges.some(e=>e.from===pendingPort&&e.to===id))edges.push({from:pendingPort,to:id});pendingPort=null;draw()}
+}
+function parseVal(raw,kind){if(kind==='list')return raw.split(',').map(s=>s.trim()).filter(Boolean);if(kind==='json'){try{return JSON.parse(raw||'{}')}catch{return raw}}if(kind==='number')return raw===''?'':Number(raw);return raw}
+function inspect(){
+ const n=nodes.find(x=>x.id===selected),b=$('#inspBody');
+ if(!n){b.innerHTML='<span class="muted">Select a tool on the canvas to configure it here.</span>';return}
+ const t=tool(n.type);
+ b.innerHTML=`<div style="display:flex;gap:8px;align-items:center"><span class="ic" style="width:30px;height:30px;border-radius:7px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;background:${CATCOLOR[t.category]||'#5d6d7e'}">${GLYPH[n.type]||'?'}</span><div><b>${t.label}</b><br><span class="muted">${t.category} - ${n.id}</span></div></div>`+
+  Object.entries(t.fields).map(([k,kind])=>{const v=n.config[k];const disp=kind==='list'?(v||[]).join(', '):kind==='json'?JSON.stringify(v??{},null,1):(v??'');
+   return kind==='bool'?`<label><input type="checkbox" style="width:auto" ${v?'checked':''} onchange="setCfg('${k}',this.checked)"> ${k}</label>`
+   :`<label>${k}</label>${kind==='textarea'||kind==='json'?`<textarea rows="4" onchange="setCfg('${k}',this.value)">${disp}</textarea>`:`<input value="${String(disp).replaceAll('"','&quot;')}" onchange="setCfg('${k}',this.value)">`}`}).join('')+
+  `<div class="rowbtns"><button onclick="dupNode()">Duplicate</button><button onclick="delNode()">Delete</button></div>
+   <p class="muted">Input anchors: ${edges.filter(e=>e.to===n.id).map(e=>e.from).join(', ')||'none'}<br>Output anchors: ${edges.filter(e=>e.from===n.id).map(e=>e.to).join(', ')||'none'}</p>
+   <button style="width:100%;padding:6px" onclick="delEdges()">Remove connections</button>
+   <p class="muted">Tip: click a tool's orange output anchor, then the next tool's blue input anchor, to connect them. For Join / Spatial tools, the first connection in is the left input.</p>`;
+}
+function setCfg(k,v){const n=nodes.find(x=>x.id===selected);n.config[k]=(typeof v==='string')?parseVal(v,tool(n.type).fields[k]):v}
+function delNode(){nodes=nodes.filter(x=>x.id!==selected);edges=edges.filter(e=>e.from!==selected&&e.to!==selected);selected=null;draw();inspect()}
+function delEdges(){edges=edges.filter(e=>e.from!==selected&&e.to!==selected);draw();inspect()}
+function dupNode(){const n=nodes.find(x=>x.id===selected);addNode(n.type,n.x+26,n.y+26);nodes[nodes.length-1].config=JSON.parse(JSON.stringify(n.config));draw();inspect()}
+function workflow(){return{name:$('#docName').textContent,nodes:nodes.map(({id,type,config,x,y})=>({id,type,config,x,y})),edges}}
+function log(msg,cls){const b=$('#logBody');if(b.querySelector('.muted'))b.innerHTML='';const d=document.createElement('div');if(cls)d.className=cls;d.textContent=msg;b.appendChild(d)}
+function rtab(t){curTab=t;['data','log','meta'].forEach(k=>{$('#rt-'+k).classList.toggle('on',k===t);$('#r'+k[0].toUpperCase()+k.slice(1)).style.display=k===t?'block':'none'})}
+async function runWf(){
+ if(!nodes.length){log('Nothing to run - add a tool first.','err');rtab('log');return}
+ rtab('log');const t0=performance.now();$('#stReady').textContent='Running...';log('Started running FlowPrep workflow at '+new Date().toLocaleTimeString());
+ try{
+  const r=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({workflow:workflow()})});
+  const d=await r.json();
+  if(d.error){log('Error: '+d.error,'err');$('#stReady').textContent='Finished with errors';return}
+  results=d;
+  for(const n of nodes){const res=d.nodes[n.id];if(res)log(tool(n.type).label+' ('+n.id+'): '+res.row_count+' records passed'+(Object.keys(res.info||{}).length?' - '+JSON.stringify(res.info):''))}
+  const secs=((performance.now()-t0)/1000).toFixed(2);
+  log('Finished running in '+secs+' seconds','ok');$('#stReady').textContent='Ready';$('#stRun').textContent='Last run: '+secs+'s, no errors';
+  draw();showAll();rtab('data');
+ }catch(e){log('Error: '+e.message,'err');$('#stReady').textContent='Finished with errors'}
+}
+function showAll(){
+ if(!results)return;const id=selected||Object.keys(results.nodes).pop();const res=results.nodes[id];if(!res)return;
+ $('#rData').innerHTML=`<b>${tool((nodes.find(n=>n.id===id)||{}).type).label||id} (${id})</b> <span class="muted">${res.row_count} records x ${res.columns.length} fields</span>`+(res.preview.length?`<table style="margin-top:7px"><tr>${res.columns.map(c=>`<th>${c}</th>`).join('')}</tr>${res.preview.slice(0,50).map(row=>`<tr>${res.columns.map(c=>`<td>${row[c]??''}</td>`).join('')}</tr>`).join('')}</table>`:'<p class="muted">No records.</p>');
+ $('#rMeta').innerHTML=`<b>Metadata for ${id}</b><table style="margin-top:7px"><tr><th>Field</th><th>Type</th></tr>${res.columns.map(c=>`<tr><td>${c}</td><td>${res.dtypes[c]||''}</td></tr>`).join('')}</table>`+(Object.keys(res.info||{}).length?`<p><b>Tool info:</b> ${JSON.stringify(res.info)}</p>`:'');
+}
+function exportWf(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(workflow(),null,2)],{type:'application/json'}));a.download='flowprep-workflow.json';a.click();log('Workflow saved as flowprep-workflow.json','ok')}
+function importWf(ev){const f=ev.target.files[0];if(!f)return;f.text().then(t=>{const w=JSON.parse(t);nodes=w.nodes||[];edges=w.edges||[];seq=nodes.length+10;selected=nodes[0]?.id||null;$('#docName').textContent=w.name||f.name;draw();inspect();log('Opened workflow: '+(w.name||f.name),'ok')})}
+function loadSample(){
+ nodes=[
+  {id:'n1',type:'input_data',config:{rows:[{customer:'Ava',region:'East',revenue:1200,latitude:43.65,longitude:-79.38},{customer:'Ben',region:'West',revenue:850,latitude:49.28,longitude:-123.12},{customer:'Cleo',region:'East',revenue:2100,latitude:45.42,longitude:-75.69},{customer:'Dev',region:'West',revenue:640,latitude:51.05,longitude:-114.07}]},x:30,y:80},
+  {id:'n2',type:'formula',config:{new_column:'revenue_with_tax',expression:'revenue * 1.13'},x:265,y:80},
+  {id:'n3',type:'distance',config:{lat_column:'latitude',lon_column:'longitude',to_lat:43.65,to_lon:-79.38,to_lat_column:'',to_lon_column:'',new_column:'km_from_toronto'},x:500,y:80},
+  {id:'n4',type:'summarize',config:{group_by:['region'],aggregations:{revenue:'sum',km_from_toronto:'mean'}},x:500,y:230},
+  {id:'n5',type:'output',config:{},x:735,y:110}];
+ edges=[{from:'n1',to:'n2'},{from:'n2',to:'n3'},{from:'n3',to:'n5'},{from:'n3',to:'n4'}];seq=6;selected='n3';
+ $('#docName').textContent='Sample - Customers Spatial';draw();inspect();log('Sample workflow loaded. Press Run.','ok');
+}
+draw();inspect();
+</script></body></html>

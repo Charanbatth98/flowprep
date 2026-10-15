@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flowprep"
+version = "0.2.0"
+description = "Open-source visual data preparation, spatial and predictive analytics - an Alteryx-style canvas built on pandas, numpy and DuckDB-friendly JSON workflows"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "FlowPrep Contributors" }]
+keywords = ["data-preparation", "etl", "spatial", "gis", "predictive-analytics", "workflow", "alteryx-alternative"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: GIS",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = ["pandas>=2.0", "numpy>=1.24"]
+
+[project.optional-dependencies]
+ml = ["scikit-learn>=1.3"]
+geo = ["shapely>=2.0", "geopandas>=0.14"]
+fast = ["duckdb>=1.0", "polars>=1.0"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+flowprep = "flowprep.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+flowprep = ["web/*.html"]
